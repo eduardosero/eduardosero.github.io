@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Looping meets blue chip</title>
+<meta name="description" content="Net yield by leverage at different borrow rates. Turn the dial from 1x to 4x.">
+<!-- X player card. Replace https://YOUR-DOMAIN/looping/ with the real HTTPS URL of this folder. -->
+<meta name="twitter:card" content="player">
+<meta name="twitter:site" content="@YOUR_HANDLE">
+<meta name="twitter:title" content="Looping meets blue chip">
+<meta name="twitter:description" content="Net yield by leverage at different borrow rates. Turn the dial from 1x to 4x.">
+<meta name="twitter:player" content="https://YOUR-DOMAIN/looping/">
+<meta name="twitter:player:width" content="640">
+<meta name="twitter:player:height" content="480">
+<meta name="twitter:image" content="https://YOUR-DOMAIN/looping/poster.png">
+<meta property="og:title" content="Looping meets blue chip">
+<meta property="og:description" content="Net yield by leverage at different borrow rates. Turn the dial from 1x to 4x.">
+<meta property="og:image" content="https://YOUR-DOMAIN/looping/poster.png">
+<meta property="og:url" content="https://YOUR-DOMAIN/looping/">
+<style>
+@font-face{font-family:Delight;src:url("https://cdn.prod.website-files.com/6a27db0f50c8c19360c9370d/6a2809abea3e7f4f84155e82_delight-regular.otf") format("opentype");font-weight:400;font-display:swap}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#f4f4f4;font-family:Delight,Arial,sans-serif;color:#1b1a1a}
+a{color:#1b1a1a;text-decoration:none}a:hover{color:#ff5b30}
+#fit{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{flex:none;width:640px;height:480px;transform-origin:center;background:#f4f4f4;padding:22px 26px;display:flex;flex-direction:column}
+.lbl{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#393638}
+.top{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #d3d3d4}
+.top div{font-size:14px;line-height:1;color:#ff5b30}
+.main{flex:1;display:grid;grid-template-columns:220px minmax(0,1fr);gap:28px;padding-top:16px;min-height:0}
+.left{display:flex;flex-direction:column;justify-content:space-between;gap:12px}
+h1{margin:0;font-size:32px;line-height:110%;font-weight:400;letter-spacing:-.3px;text-wrap:pretty}
+.grp{display:flex;flex-direction:column;gap:8px}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid #1b1a1a;border-radius:8px;padding:3px;gap:3px}
+.seg button{font:inherit;font-size:15px;line-height:1;padding:9px 0;border:0;border-radius:4px;cursor:pointer;background:transparent;color:#1b1a1a;transition:background .3s ease,color .3s ease}
+.seg button.on{background:#1b1a1a;color:#f4f4f4}
+.dialrow{display:flex;align-items:center;gap:14px}
+.dial{position:relative;width:120px;height:120px;flex:none}
+.tick{position:absolute;transform:translate(-50%,-50%);font:inherit;font-size:14px;line-height:1;background:none;border:0;padding:6px;cursor:pointer;color:#393638;transition:color .25s cubic-bezier(.455,.03,.515,.955)}
+.tick.on{color:#ff5b30}
+#knob{position:absolute;left:25px;top:25px;width:70px;height:70px;border-radius:50%;border:1px solid #1b1a1a;background:#ebebeb;cursor:grab;touch-action:none;outline-offset:3px}
+#knob:focus-visible{outline:2px solid #1b1a1a}
+#ptr{position:absolute;inset:0;transition:transform .25s cubic-bezier(.455,.03,.515,.955)}
+#ptr i{position:absolute;left:50%;top:7px;width:4px;height:22px;margin-left:-2px;background:#ff5b30}
+.hint{font-size:13px;line-height:140%;color:#393638}
+.right{display:flex;flex-direction:column;min-width:0}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding-bottom:16px}
+#yield{font-size:56px;line-height:100%;letter-spacing:-1px}
+#scen{font-size:13px;line-height:140%;color:#393638;text-align:right;max-width:16ch}
+.plot{position:relative;flex:1;min-height:0;margin-left:34px;border-bottom:1px solid #1b1a1a}
+.gl{position:absolute;left:0;right:0;border-top:1px solid #d3d3d4}
+.gl span{position:absolute;right:calc(100% + 8px);top:-8px;font-size:12px;color:#393638}
+.bars,.axis{display:flex;justify-content:center;gap:18px}
+.bars{position:absolute;inset:0;align-items:flex-end}
+.c{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;cursor:pointer;width:52px;transition:width .3s ease}
+.c b{font-weight:400;font-size:13px;line-height:1;color:#393638;transition:color .3s ease}
+.c div{flex:none;width:100%;background:#d3d3d4;transition:height .5s cubic-bezier(.455,.03,.515,.955),background .3s ease}
+.c.on{width:86px}.c.on b{font-size:16px;color:#1b1a1a}.c.on div{background:#ff5b30}
+.axis{margin-left:34px;padding-top:8px}
+.axis div{width:52px;text-align:center;font-size:13px;line-height:1.3;color:#393638;transition:width .3s ease}
+.axis div.on{width:86px;color:#1b1a1a}
+.cap{margin-left:34px;padding-top:4px;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div id="fit"><div id="stage">
+<div class="top"><div>[Net yield by leverage]</div><svg xmlns="http://www.w3.org/2000/svg" width="58" height="18" style="display:block" viewBox="0 0 77 24" fill="none"> <path fill-rule="evenodd" clip-rule="evenodd" d="M58.1681 23.5508H53.2683L53.1729 20.6951C52.6214 21.7861 51.8366 22.6096 50.8184 23.1658C49.8215 23.7219 48.6867 24 47.414 24C46.2898 24 45.2611 23.786 44.3278 23.3582C43.4157 22.909 42.6309 22.2888 41.9733 21.4973C41.337 20.6845 40.8385 19.7112 40.478 18.5775C40.1174 17.4438 39.9371 16.1818 39.9371 14.7914C39.9371 13.4011 40.1174 12.139 40.478 11.0054C40.8385 9.87168 41.337 8.90907 41.9733 8.11762C42.6309 7.3048 43.4157 6.68451 44.3278 6.25671C45.2611 5.80751 46.2898 5.58289 47.414 5.58289C48.6867 5.58289 49.8003 5.86097 50.7548 6.41711C51.7305 6.97326 52.4941 7.76471 53.0456 8.79144V0H58.1681V23.5508ZM49.0685 9.85025C47.8595 9.85025 46.9261 10.278 46.2686 11.1337C45.611 11.9893 45.2823 13.1978 45.2823 14.7593C45.2823 16.3422 45.611 17.5722 46.2686 18.4492C46.9473 19.3048 47.8913 19.7326 49.1003 19.7326C50.3093 19.7326 51.2533 19.2941 51.932 18.4171C52.6108 17.5401 52.9502 16.3208 52.9502 14.7593C52.9502 13.2192 52.6108 12.0214 51.932 11.1658C51.2533 10.2888 50.2988 9.85026 49.0685 9.85025Z" fill="currentColor"> </path> <path fill-rule="evenodd" clip-rule="evenodd" d="M68.7276 5.58289C71.379 5.58289 73.4152 6.21391 74.8364 7.47593C76.2788 8.71657 77 10.5455 77 12.9626V23.5508H72.1002L72.0048 21.0802C71.4533 21.9144 70.626 22.6096 69.523 23.1658C68.4413 23.7219 67.1686 24 65.705 24C64.9414 24 64.2096 23.9037 63.5096 23.7112C62.8097 23.54 62.1839 23.262 61.6324 22.8769C61.1022 22.4919 60.6673 21.9893 60.3279 21.369C60.0098 20.7486 59.8507 20 59.8507 19.123C59.8507 17.6043 60.3597 16.4385 61.3779 15.6257C62.4172 14.7914 63.9444 14.1818 65.9595 13.7967L71.8775 12.6738V12.5455C71.8775 11.5187 71.6017 10.7487 71.0502 10.2353C70.4987 9.72195 69.7245 9.4652 68.7276 9.4652C67.667 9.4652 66.8822 9.74328 66.3731 10.2994C65.8641 10.8342 65.5565 11.5829 65.4505 12.5455H60.1052C60.2113 11.3476 60.487 10.3208 60.9325 9.4652C61.3991 8.58821 62.0036 7.86093 62.746 7.2834C63.5096 6.70586 64.3899 6.27807 65.3868 6C66.4049 5.72193 67.5185 5.58289 68.7276 5.58289ZM67.6458 16.2352C66.7974 16.4064 66.1822 16.6524 65.8004 16.9732C65.4186 17.2941 65.2277 17.7326 65.2277 18.2888C65.2277 18.9091 65.4399 19.3797 65.8641 19.7005C66.3095 20 66.9352 20.1497 67.7413 20.1497C68.9927 20.1497 69.9896 19.7861 70.732 19.0588C71.4956 18.3101 71.8775 17.2941 71.8775 16.0107V15.369L67.6458 16.2352Z" fill="currentColor"> </path> <path d="M9.20808 5.6026C10.4484 5.6026 11.5731 5.77272 12.5822 6.11294C13.0814 6.27781 13.551 6.47764 13.991 6.71242C13.2588 7.10283 12.6105 7.58344 12.0461 8.15425C11.482 8.70988 11.0069 9.35034 10.6209 10.0757C10.2092 9.92168 9.74875 9.84473 9.2396 9.84473C7.97823 9.84473 7.00067 10.2806 6.30692 11.1524C5.63418 12.0242 5.29782 13.215 5.29782 14.7247C5.29782 16.2557 5.63419 17.4677 6.30692 18.3608C7.00067 19.2326 7.97822 19.6685 9.2396 19.6685C9.75184 19.6685 10.2132 19.5942 10.6238 19.4456C11.0092 20.1732 11.4833 20.8216 12.0461 21.3909C12.6112 21.9474 13.2605 22.4188 13.9939 22.8051C13.5635 23.0335 13.1034 23.2319 12.6138 23.4003C11.5836 23.7405 10.4484 23.9107 9.20808 23.9107C7.82057 23.9107 6.55918 23.6874 5.42395 23.2409C4.2887 22.7943 3.32165 22.1776 2.52278 21.3909C1.72391 20.5828 1.10371 19.6154 0.662227 18.4884C0.220749 17.3402 2.46474e-06 16.0856 0 14.7247C0 13.3639 0.220747 12.1199 0.662227 10.993C1.10371 9.86598 1.72391 8.90909 2.52278 8.12233C3.32165 7.31432 4.28871 6.69766 5.42395 6.27239C6.55918 5.82586 7.82057 5.6026 9.20808 5.6026Z" fill="currentColor"> </path> <path d="M32.9789 9.75402C33.3395 8.44921 33.8803 7.508 34.6015 6.93046C35.3227 6.33154 36.256 6.03206 37.4014 6.03205H39.2468V11.4225H37.2423C35.8 11.4225 34.7712 11.7219 34.1561 12.3208C33.541 12.8984 33.2334 13.8396 33.2334 15.1444V23.5508H27.9518V6.03205H32.8516L32.9789 9.75402Z" fill="currentColor"> </path> <path d="M18.763 9.84473C20.0243 9.84473 20.9915 10.2912 21.6642 11.1843C22.3369 12.0561 22.6733 13.2469 22.6733 14.7566C22.6733 16.2876 22.3369 17.489 21.6642 18.3608C20.9915 19.2326 20.0243 19.6685 18.763 19.6685C18.2435 19.6685 17.7722 19.5946 17.349 19.4467C16.7446 19.2356 16.2383 18.8736 15.8303 18.3608C15.44 17.855 15.163 17.2384 14.9991 16.5108C14.8805 15.9842 14.8212 15.3994 14.8212 14.7566C14.8212 14.0352 14.898 13.3867 15.0516 12.811C15.2195 12.1818 15.479 11.6396 15.8303 11.1843C16.2369 10.6609 16.7411 10.2908 17.3427 10.0742C17.7675 9.92118 18.2409 9.84473 18.763 9.84473Z" fill="currentColor"> </path> </svg></div>
+<div class="main">
+<div class="left">
+<h1>Looping meets <span style="color:#65a5d5">blue chip</span></h1>
+<div class="grp"><div class="lbl">Borrow rate</div><div class="seg" id="seg"></div></div>
+<div class="grp"><div class="lbl">Leverage</div>
+<div class="dialrow"><div class="dial" id="dial"><div id="knob" tabindex="0" role="slider" aria-label="Leverage" aria-valuemin="1" aria-valuemax="4"><div id="ptr"><i></i></div></div></div>
+<div class="hint">Turn the dial or use the arrow keys</div></div></div>
+</div>
+<div class="right">
+<div class="head"><div class="grp" style="gap:4px"><div class="lbl">Net yield</div><div id="yield"></div></div><div id="scen"></div></div>
+<div class="plot" id="plot"></div>
+<div class="axis" id="axis"></div>
+<div class="lbl cap" id="cap"></div>
+</div>
+</div>
+</div></div>
+<script>
+(function(){
+var BASE=8,RATES=[5,7,9],MAX=20,s={lev:3,rate:5};
+var $=function(id){return document.getElementById(id)};
+var net=function(l,r){return BASE+(l-1)*(BASE-r)};
+var ang=function(l){return -135+(l-1)*90};
+var fmt=function(v){return Math.round(v*10)/10+'%'};
+var seg=$('seg'),dial=$('dial'),knob=$('knob'),plot=$('plot'),axis=$('axis');
+[20,15,10,5,0].forEach(function(v){var g=document.createElement('div');g.className='gl';g.style.bottom=(v/MAX*100)+'%';if(!v)g.style.border='0';g.innerHTML='<span>'+v+'%</span>';plot.appendChild(g)});
+var bars=document.createElement('div');bars.className='bars';plot.appendChild(bars);
+RATES.forEach(function(r){
+  var b=document.createElement('button');b.textContent=r+'%';b.onclick=function(){s.rate=r;draw()};seg.appendChild(b);
+  var c=document.createElement('div');c.className='c';c.innerHTML='<b></b><div></div>';c.onclick=b.onclick;bars.appendChild(c);
+  var a=document.createElement('div');a.textContent=r+'%';axis.appendChild(a);
+});
+[1,2,3,4].forEach(function(l){
+  var t=document.createElement('button'),rad=ang(l)*Math.PI/180;
+  t.className='tick';t.textContent=l+'x';t.style.left=(60+Math.sin(rad)*52)+'px';t.style.top=(60-Math.cos(rad)*52)+'px';
+  t.onclick=function(){setLev(l)};dial.insertBefore(t,knob);
+});
+function setLev(l){l=Math.max(1,Math.min(4,l));if(l!==s.lev){s.lev=l;draw()}}
+function draw(){
+  var l=s.lev,r=s.rate;
+  $('yield').textContent=fmt(net(l,r));
+  $('scen').textContent=l+'x leverage, borrowing at '+r+'%';
+  $('cap').textContent='Borrow rate at '+l+'x leverage';
+  $('ptr').style.transform='rotate('+ang(l)+'deg)';
+  knob.setAttribute('aria-valuenow',l);
+  [].forEach.call(dial.querySelectorAll('.tick'),function(t,i){t.classList.toggle('on',i+1===l)});
+  RATES.forEach(function(x,i){
+    var on=x===r,v=net(l,x),c=bars.children[i];
+    seg.children[i].classList.toggle('on',on);
+    c.classList.toggle('on',on);axis.children[i].classList.toggle('on',on);
+    c.firstChild.textContent=fmt(v);c.lastChild.style.height=Math.max(0,v)/MAX*100+'%';
+  });
+}
+function fromPtr(e){
+  var b=knob.getBoundingClientRect();
+  var a=Math.atan2(e.clientX-(b.left+b.width/2),-(e.clientY-(b.top+b.height/2)))*180/Math.PI;
+  return Math.round((Math.max(-135,Math.min(135,a))+135)/90)+1;
+}
+knob.addEventListener('pointerdown',function(e){
+  e.preventDefault();knob.focus();setLev(fromPtr(e));
+  var mv=function(ev){setLev(fromPtr(ev))},up=function(){removeEventListener('pointermove',mv);removeEventListener('pointerup',up)};
+  addEventListener('pointermove',mv);addEventListener('pointerup',up);
+});
+knob.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key==='ArrowUp'){e.preventDefault();setLev(s.lev+1)}
+  if(e.key==='ArrowLeft'||e.key==='ArrowDown'){e.preventDefault();setLev(s.lev-1)}
+});
+knob.addEventListener('wheel',function(e){e.preventDefault();setLev(s.lev+(e.deltaY<0?1:-1))},{passive:false});
+function fit(){var k=Math.min(innerWidth/640,innerHeight/480);$('stage').style.transform='scale('+k+')'}
+addEventListener('resize',fit);fit();draw();
+})();
+</script>
+</body>
+</html>
